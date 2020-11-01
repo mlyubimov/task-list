@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import SectionList from '@/components/section-list'
-import Api from '@/api/idb'
 
 Vue.use(VueRouter)
 
