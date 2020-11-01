@@ -69,14 +69,14 @@
 					<p class="navigation__text">Категории</p>
 				</div>
 				<ul class="navigation__list">
-					<router-link class="navigation__item" tag="li" :to="`${task.category}`" v-for="(task, index) in tasks" :key="index">
-						<a :class="`navigation__text navigation__link navigation__link-page navigation__link-page--${task.color}`">{{ task.pagename }}</a>
+					<router-link class="navigation__item" tag="li" :to="{name: 'pagenameCategory', params: {pagenameCategory: `${tasks.category}`, category: `${tasks.category}`}}" v-for="(tasks, index) in allTasks" :key="tasks.category">
+						<a :class="`navigation__text navigation__link navigation__link-page navigation__link-page--${tasks.color}`">{{ tasks.pagename }}</a>
 					</router-link>
 				</ul>
 			</div>
 			
 		</ul>
-		<button class="btn btn-add btn-add--category" type="button" @click="$emit('addCategory')">
+		<button class="btn btn-add btn-add--category" type="button" @click="addCategory(pagename)">
 			<svg class="plus" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
 				<rect x="8" width="4" height="20" rx="2"/>
 				<rect x="20" y="8" width="4" height="20" rx="2" transform="rotate(90 20 8)"/>
@@ -87,10 +87,57 @@
 </template>
 
 <script>
-export default {
-	name: 'aside-list',
-	props: ['tasks']
-}
+	import { mapActions } from 'vuex'
+	import api from '@/api/idb'
+	import SectionList from '@/components/section-list'
+	import RusToLatin from '@/functions/rus_to_latin'
+	import GetTasksCategory from '@/functions/getting_tasks_category'
+
+	export default {
+		name: 'AsideList',
+
+		data() {
+			return {
+				pagename: 'Новая категория'
+			}
+		},
+
+		computed: {
+			allTasks() {
+				return this.$store.state.tasks
+			}
+		},
+
+		created () {
+			this.getTasks()
+		},
+
+		methods: {
+			...mapActions(['getTasks', 'addCategoryToDb']),
+
+			async addCategory(pagename) {
+				const category = {
+					pagename: pagename,
+					category: GetTasksCategory(this.allTasks, RusToLatin(pagename)),
+					color: 'purple',
+					data: []
+				}
+
+				this._data.pagename = 'Новая категория'
+
+				await this.addCategoryToDb({ category })
+				this.getTasks()
+
+				this.transitionWhenCreate(category.category)
+			},
+
+			transitionWhenCreate(category) {
+				if (this.$router.currentRoute.path != '/' + category) {
+					this.$router.push({name: 'pagenameCategory', params: {pagenameCategory: category, category: category} })
+				}
+			}
+		}
+	}
 </script>
 
 <style lang="scss">
@@ -124,9 +171,7 @@ export default {
 		}
 
 		&__item {
-			&:not(:last-child) {
-				margin: 20px 0;
-			}
+			margin-top: 20px;
 		}
 
 		&__list {

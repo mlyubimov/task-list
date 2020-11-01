@@ -9,7 +9,7 @@
 				</g>
 			</svg>
 		</button>
-		<input :class="['content__title', classText]" type="text" v-model="task.title" v-focus @focus="task.focused = true" @blur="task.focused = false; $emit('blurRemove')">
+		<input :class="['content__title', classText]" type="text" v-model="task.title" v-focus @focus="task.focused = true" @blur="task.focused = false; deleteTask(task, 'input')">
 		<button class="btn content__btn" type="button">
 			<svg width="21" height="21" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<rect x="1" y="1" width="23" height="23" rx="5" stroke="black" stroke-width="2"/>
@@ -22,7 +22,7 @@
 				<path d="M14.4511 1.69098C14.3172 1.27896 13.9332 1 13.5 1C13.0668 1 12.6828 1.27896 12.5489 1.69098L10.1915 8.9463H2.56285C2.12962 8.9463 1.74567 9.22526 1.61179 9.63729C1.47792 10.0493 1.62458 10.5007 1.97506 10.7553L8.14681 15.2394L5.78941 22.4947C5.65554 22.9067 5.8022 23.3581 6.15268 23.6127C6.50317 23.8674 6.97777 23.8674 7.32825 23.6127L13.5 19.1287L19.6717 23.6127C20.0222 23.8674 20.4968 23.8674 20.8473 23.6127C21.1978 23.3581 21.3445 22.9067 21.2106 22.4947L18.8532 15.2394L25.0249 10.7553C25.3754 10.5007 25.5221 10.0493 25.3882 9.63729C25.2543 9.22526 24.8704 8.9463 24.4371 8.9463H16.8085L14.4511 1.69098Z" stroke="#4F4F4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
 		</button>
-		<button class="btn content__btn" type="button" @click="$emit('removeTask')">
+		<button class="btn content__btn" type="button" @click="deleteTask(task, 'button')">
 			<svg width="18" height="20" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M19 1C19.5523 1 20 1.44772 20 2C20 2.55228 19.5523 3 19 3L0.999999 3C0.447715 3 -7.8068e-07 2.55228 -7.57402e-07 2C-7.34125e-07 1.44771 0.447715 0.999999 0.999999 0.999999L19 1Z" fill="#4F4F4F"/>
 				<path fill-rule="evenodd" clip-rule="evenodd" d="M18 4H2V20C2 21.1046 2.89543 22 4 22H16C17.1046 22 18 21.1046 18 20V4ZM10 18C10.5523 18 11 17.5523 11 17L11 9C11 8.44771 10.5523 8 10 8C9.44772 8 9 8.44772 9 9L9 17C9 17.5523 9.44772 18 10 18ZM15 17C15 17.5523 14.5523 18 14 18C13.4477 18 13 17.5523 13 17L13 9C13 8.44772 13.4477 8 14 8C14.5523 8 15 8.44771 15 9L15 17ZM6 18C6.55228 18 7 17.5523 7 17L7 9C7 8.44771 6.55229 8 6 8C5.44772 8 5 8.44772 5 9L5 17C5 17.5523 5.44772 18 6 18Z" fill="#4F4F4F"/>
@@ -33,43 +33,64 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import VCalendar from 'v-calendar'
+	import Vue from 'vue'
+	// import VCalendar from 'v-calendar'
+	import { mapActions } from 'vuex'
+	import RusToLatin from '@/functions/rus_to_latin'
+	import GetItemId from '@/functions/getting_item_id'
 
-Vue.use(VCalendar, {
-	componentPrefix: 'vc',
-});
+	// Vue.use(VCalendar, {
+	// 	componentPrefix: 'vc',
+	// });
 
-export default {
-	name: 'section-item',
-	directives: {
-		focus: {
-		inserted: function (el) {
-			if(el.value === '') {
-			el.focus()
-			}
-		}
-		}
-	},
-	props: ['task'],
-	computed: {
-		classText() {
-			if (this.task.completed) {
-				return ['content__title--completed']
+	export default {
+		name: 'section-item',
+
+		directives: {
+			focus: {
+				inserted: function (el) {
+					if(el.value === '') {
+					el.focus()
+					}
+				}
 			}
 		},
-		classButton() {
-			if (this.task.completed) {
-				return ['content__item--completed']
-			} else if (this.task.selected) {
-				return ['content__item--selected']
+
+		props: ['task'],
+
+		computed: {
+			classText() {
+				if (this.task.completed) {
+					return ['content__title--completed']
+				}
+			},
+			classButton() {
+				if (this.task.completed) {
+					return ['content__item--completed']
+				} else if (this.task.selected) {
+					return ['content__item--selected']
+				}
+			},
+			classStar() {
+				if (this.task.selected) {
+					return ['content__btn--selected']
+				}
 			}
 		},
-		classStar() {
-			if (this.task.selected) {
-				return ['content__btn--selected']
+
+		methods: {
+			...mapActions(['getTasks', 'getPageTasks', 'addTaskToDb', 'addCategoryToDb', 'updateCategoryToDb']),
+
+			async deleteTask(task, type) {
+				if ( (task.title.trim() === '' && type === 'input') || type === 'button' ) {
+					await this.$store.dispatch('deleteTaskFromDb', { task })
+					this.getTasks()
+
+					let NameForGettingTasks = this.$router.currentRoute.path.slice(1)
+					this.getPageTasks({ NameForGettingTasks })
+				}
+				
 			}
 		}
 	}
-}
 </script>

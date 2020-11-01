@@ -1,39 +1,49 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import SectionList from '../components/section-list'
+import SectionList from '@/components/section-list'
+import Api from '@/api/idb'
 
 Vue.use(VueRouter)
 
-export const routes = [
+let Component = SectionList
+
+let routes = [
 	{
 		path: '/',
 		redirect: '/today',
 	},
 	{
 		path: '/today',
-		component: SectionList,
+		component: Component,
 		props: {category: 'today'}
 	},
 	{
 		path: '/selected',
-		component: SectionList,
+		component: Component,
 		props: {category: 'selected'}
 	},
 	{
 		path: '/complete',
-		component: SectionList,
+		component: Component,
 		props: {category: 'complete'}
 	},
 	{
 		path: '/calendar',
-		component: SectionList,
+		component: Component,
 		props: {category: 'date'}
+	},
+	{
+		path: '/:pagenameCategory',
+		name: 'pagenameCategory',
+		component: Component,
+		props: true
 	}
 ]
 
 const router = new VueRouter({
 	mode: 'history',
 	base: process.env.BASE_URL,
+	props: ['category'],
 	routes
 })
 
