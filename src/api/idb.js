@@ -68,28 +68,28 @@ export default {
 				case 'today':
 					tasks.pagename = 'Задачи на сегодня'
 					tasks.category = 'today'
-					tasks.color = 'purple'
-					tasks.data = []
-					break;
-
-				case 'selected':
-					tasks.pagename = 'Избранные задачи'
-					tasks.category = 'today'
-					tasks.color = 'purple'
-					tasks.data = []
-					break;
-
-				case 'complete':
-					tasks.pagename = 'Выполненные задачи'
-					tasks.category = 'today'
-					tasks.color = 'purple'
+					tasks.color = 'cyan'
 					tasks.data = []
 					break;
 
 				case 'calendar':
 					tasks.pagename = 'Календарь задач'
 					tasks.category = 'today'
-					tasks.color = 'purple'
+					tasks.color = 'blue'
+					tasks.data = []
+					break;
+
+				case 'selected':
+					tasks.pagename = 'Избранные задачи'
+					tasks.category = 'today'
+					tasks.color = 'yellow'
+					tasks.data = []
+					break;
+
+				case 'complete':
+					tasks.pagename = 'Выполненные задачи'
+					tasks.category = 'today'
+					tasks.color = 'green'
 					tasks.data = []
 					break;
 
@@ -119,10 +119,35 @@ export default {
 
 			let getTaskCategory = store.get(taskCategory.join('_'))
 
-			
 			getTaskCategory.onsuccess = (e) => {
 				e.target.result.data.push(task) // обновляем data у значения с ключём category
 				store.put(e.target.result) // обновляем данные в хранилище объектов
+			}
+		})
+	},
+
+	async updateTask (task) {
+		let db = await this.getDb()
+		return new Promise(resolve => {
+			let trans = db.transaction([STORAGE_NAME], 'readwrite')
+			trans.oncomplete = () => {
+				resolve()
+			}
+
+			let store = trans.objectStore(STORAGE_NAME)
+			let taskCategory = task.id.split('_')
+			taskCategory.shift()
+			taskCategory.pop()
+
+			let getTaskCategory = store.get(taskCategory.join('_'))
+
+			getTaskCategory.onsuccess = (e) => {
+				for (let i = 0; i < e.target.result.data.length; i++) {
+					if (task.id === e.target.result.data[i].id) {
+						e.target.result.data[i] = task
+					}
+				}
+				store.put(e.target.result)
 			}
 		})
 	},

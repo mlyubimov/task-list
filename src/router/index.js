@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import SectionList from '@/components/section-list'
+import SectionCalendar from '@/components/section-calendar'
+import SectionEmpty from '@/components/section-empty'
 
 Vue.use(VueRouter)
 
@@ -13,23 +15,23 @@ let routes = [
 	},
 	{
 		path: '/today',
-		component: Component,
-		props: {category: 'today'}
-	},
-	{
-		path: '/selected',
-		component: Component,
-		props: {category: 'selected'}
-	},
-	{
-		path: '/complete',
-		component: Component,
-		props: {category: 'complete'}
+		component: SectionEmpty,
+		props: { category: 'today' }
 	},
 	{
 		path: '/calendar',
-		component: Component,
-		props: {category: 'date'}
+		component: SectionEmpty,
+		props: { category: 'date' }
+	},
+	{
+		path: '/selected',
+		component: SectionEmpty,
+		props: { category: 'selected' }
+	},
+	{
+		path: '/complete',
+		component: SectionEmpty,
+		props: { category: 'complete' }
 	},
 	{
 		path: '/:pagenameCategory',

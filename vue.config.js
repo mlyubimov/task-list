@@ -1,5 +1,15 @@
 module.exports = {
 	publicPath: process.env.NODE_ENV === 'production'
-		? '/task-list/'
-		: '/'
+		? '/task-manager/'
+		: '/',
+	pages: {
+		index: {
+			entry: 'src/main.js',
+			title: 'Task manager'
+		},
+		404: {
+			entry: 'src/main.js',
+			title: 'Task manager'
+		},
+	}
 }

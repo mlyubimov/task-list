@@ -10,6 +10,10 @@ export default {
 		commit('SET_TASKS', tasks)
 	},
 
+	updateTaskToDb({ commit }, { task }) {
+		return api.updateTask(task)
+	},
+
 	deleteTaskFromDb({ commit }, { task }) {
 		return api.deleteTask(task)
 	},

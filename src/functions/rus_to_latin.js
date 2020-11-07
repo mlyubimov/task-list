@@ -8,7 +8,7 @@ export default function (str) {
 		'щ': 'shch', 'ы': 'y', 'э': 'e', 'ю': 'u', 'я': 'ya'
 	}, n_str = [];
 	
-	str = str.replace(/[ъь]+/g, "'").replace(/й/g, 'i').replace(/\s+/g, '-').replace(/[.,]/g, '').replace(/_+/g, '-');
+	str = str.replace(/[ъь]+/g, '').replace(/й/g, 'i').replace(/\s+/g, '-').replace(/[.,]/g, '').replace(/_+/g, '-');
 	
 	for ( let i = 0; i < str.length; ++i ) {
 		n_str.push(

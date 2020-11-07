@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<AsideList />
+		<AsideList :key="'aside-' + $route.fullPath.slice(1)"/>
 		<router-view :key="$route.fullPath.slice(1)"/>
 	</div>
 </template>
@@ -88,6 +88,10 @@
 	.btn {
 		cursor: pointer;
 
+		&--hide {
+			cursor: default;
+		}
+
 		&-add {
 			position: absolute;
 			left: 30px;
@@ -105,6 +109,10 @@
 			border-radius: 16px;
 
 			transition: .2s;
+
+			&--special {
+				display: none;
+			}
 
 			&__text {
 				padding: 13px 20px 14px;

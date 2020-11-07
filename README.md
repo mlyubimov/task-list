@@ -16,7 +16,7 @@
 
 ## Что в планах?
 
-![IndexedDB](https://flat.badgen.net/badge/STATUS/IN%20WORKING/4cc61e)&emsp;Хранилище данных  
+![IndexedDB](https://flat.badgen.net/badge/STATUS/SUCCESS/4cc61e)&emsp;Хранилище данных  
 ![Responsive design](https://flat.badgen.net/badge/STATUS/IN%20WORKING/8b35da)&emsp;Адаптивный дизайн  
 ![Functionality of Tabs](https://flat.badgen.net/badge/STATUS/IN%20WORKING/8b35da)&emsp;Функциональность особым вкладкам  
 ![Dark Theme](https://flat.badgen.net/badge/STATUS/IN%20QUEUE/d9634c)&emsp;Тёмная тема  
