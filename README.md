@@ -2,7 +2,7 @@
  
 ![Version](https://flat.badgen.net/badge/icon/Версия:%200.5.0?label&color=blue)  
 [![Author](https://flat.badgen.net/badge/icon/Автор:%20Максим%20Любимов?label&color=blue)](https://github.com/mlyubimov)  
-[![Live demo](https://flat.badgen.net/badge/icon/Live%20demo?label&color=4cc61e)](https://mlyubimov.github.io/task-list/)
+[![Live demo](https://flat.badgen.net/badge/icon/Live%20demo?label&color=4cc61e)](https://mlyubimov.github.io/task-manager/)
 
 ## Что это такое?
 
