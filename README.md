@@ -28,6 +28,7 @@
 
 [![Vue](https://flat.badgen.net/badge/icon/Vue?label&color=42b883)](https://vuejs.org/)
 [![Vue-router](https://flat.badgen.net/badge/icon/Vue-router?label&color=42b883)](https://router.vuejs.org/)
+[![Vuex](https://flat.badgen.net/badge/icon/Vuex?label&color=42b883)](https://vuex.vuejs.org/)
 [![Vue-CLI](https://flat.badgen.net/badge/icon/Vue-CLI?label&color=42b883)](https://cli.vuejs.org/)
 [![Webpack](https://flat.badgen.net/badge/icon/Webpack?label&color=1b6eaf)](https://webpack.js.org/)
 [![Babel](https://flat.badgen.net/badge/icon/Babel?label&color=f1d53c)](https://babeljs.io/)
