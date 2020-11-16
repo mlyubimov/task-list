@@ -1,268 +1,291 @@
-import RusToLatin from '@/functions/rus_to_latin'
-import GetTasksCategory from '@/functions/getting_tasks_category'
+import RusToLatin from "@/functions/rus_to_latin";
+import GetTasksCategory from "@/functions/getting_tasks_category";
 
-const DB_NAME = 'taskdb'
-const STORAGE_NAME = 'tasks'
-const DB_VERSION = 1
-let DB
+const DB_NAME = "taskdb";
+const STORAGE_NAME = "tasks";
+const DB_VERSION = 1;
+let DB;
 
 // In the following line, you should include the prefixes of implementations you want to test.
 // window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // DON'T use "var indexedDB = ..." if you're not in a function.
 // Moreover, you may need references to some window.IDB* objects:
-window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"}; // This line should only be needed if it is needed to support the object's constants for older browsers
-window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+window.IDBTransaction = window.IDBTransaction ||
+	window.webkitIDBTransaction ||
+	window.msIDBTransaction || { READ_WRITE: "readwrite" }; // This line should only be needed if it is needed to support the object's constants for older browsers
+window.IDBKeyRange =
+	window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
 
 export default {
-	async getDb () {
+	async getDb() {
 		return new Promise((resolve, reject) => {
 			if (DB) {
-				return resolve(DB)
+				return resolve(DB);
 			}
-			const request = window.indexedDB.open(DB_NAME, DB_VERSION) || window.mozIndexedDB.open(DB_NAME, DB_VERSION) || window.webkitIndexedDB || window.msIndexedDB.open(DB_NAME, DB_VERSION);
+			const request =
+				window.indexedDB.open(DB_NAME, DB_VERSION) ||
+				window.mozIndexedDB.open(DB_NAME, DB_VERSION) ||
+				window.webkitIndexedDB ||
+				window.msIndexedDB.open(DB_NAME, DB_VERSION);
 
 			if (!window.indexedDB) {
-				window.alert("Your browser doesn't support a stable version of IndexedDB.")
+				window.alert(
+					"Your browser doesn't support a stable version of IndexedDB."
+				);
 			}
 
 			request.onerror = e => {
-				console.log('Error opening db', e)
-				reject('Error')
-			}
+				console.log("Error opening db", e);
+				reject("Error");
+			};
 
 			request.onsuccess = e => {
-				DB = e.target.result
-				resolve(DB)
-			}
+				DB = e.target.result;
+				resolve(DB);
+			};
 
 			request.onupgradeneeded = e => {
-				let db = e.target.result
-				let objectStore = db.createObjectStore(STORAGE_NAME, { autoIncrement: true, keyPath: 'category' })
+				let db = e.target.result;
+				let objectStore = db.createObjectStore(STORAGE_NAME, {
+					autoIncrement: true,
+					keyPath: "category"
+				});
 
-				objectStore.createIndex('today', 'category')
-			}
-		})
+				objectStore.createIndex("today", "category");
+			};
+		});
 	},
 
-	async getTasks () {
-		let db = await this.getDb()
+	async getTasks() {
+		let db = await this.getDb();
 		return new Promise(resolve => {
-			let trans = db.transaction([STORAGE_NAME], 'readonly')
+			let trans = db.transaction([STORAGE_NAME], "readonly");
 			trans.oncomplete = () => {
-				resolve(tasks)
-			}
+				resolve(tasks);
+			};
 
-			const store = trans.objectStore(STORAGE_NAME)
-			const tasks = []
-			
+			const store = trans.objectStore(STORAGE_NAME);
+			const tasks = [];
+
 			store.openCursor().onsuccess = e => {
-				const cursor = e.target.result
+				const cursor = e.target.result;
 				if (cursor) {
-					tasks.push(cursor.value)
-					cursor.continue()
+					tasks.push(cursor.value);
+					cursor.continue();
 				}
-			}
-		})
+			};
+		});
 	},
 
-	async getPageTasks (NameForGettingTasks) {
-		let db = await this.getDb()
+	async getPageTasks(NameForGettingTasks) {
+		let db = await this.getDb();
 		return new Promise(resolve => {
-			let trans = db.transaction([STORAGE_NAME], 'readonly')
+			let trans = db.transaction([STORAGE_NAME], "readonly");
 			trans.oncomplete = () => {
-				resolve(tasks)
-			}
+				resolve(tasks);
+			};
 
-			let tasks = {}
+			let tasks = {};
 
 			switch (NameForGettingTasks) {
-				case 'today':
-					tasks.pagename = 'Задачи на сегодня'
-					tasks.category = 'today'
-					tasks.color = 'cyan'
-					tasks.data = []
+				case "today": {
+					tasks.pagename = "Задачи на сегодня";
+					tasks.category = "today";
+					tasks.color = "cyan";
+					tasks.data = [];
 					break;
-
-				case 'calendar':
-					tasks.pagename = 'Календарь задач'
-					tasks.category = 'today'
-					tasks.color = 'blue'
-					tasks.data = []
+				}
+				case "calendar": {
+					tasks.pagename = "Календарь задач";
+					tasks.category = "today";
+					tasks.color = "blue";
+					tasks.data = [];
 					break;
-
-				case 'selected':
-					tasks.pagename = 'Избранные задачи'
-					tasks.category = 'today'
-					tasks.color = 'yellow'
-					tasks.data = []
+				}
+				case "selected": {
+					tasks.pagename = "Избранные задачи";
+					tasks.category = "today";
+					tasks.color = "yellow";
+					tasks.data = [];
 					break;
-
-				case 'complete':
-					tasks.pagename = 'Выполненные задачи'
-					tasks.category = 'today'
-					tasks.color = 'green'
-					tasks.data = []
+				}
+				case "complete": {
+					tasks.pagename = "Выполненные задачи";
+					tasks.category = "today";
+					tasks.color = "green";
+					tasks.data = [];
 					break;
+				}
+				default: {
+					const store = trans
+						.objectStore(STORAGE_NAME)
+						.get(NameForGettingTasks);
 
-				default:
-					const store = trans.objectStore(STORAGE_NAME).get(NameForGettingTasks)
-			
 					store.onsuccess = e => {
-						tasks = e.target.result
-					}	
+						tasks = e.target.result;
+					};
 					break;
-			}	
-		})
+				}
+			}
+		});
 	},
 
-	async saveTask (task) {
-		let db = await this.getDb()
+	async saveTask(task) {
+		let db = await this.getDb();
 		return new Promise(resolve => {
-			let trans = db.transaction([STORAGE_NAME], 'readwrite')
+			let trans = db.transaction([STORAGE_NAME], "readwrite");
 			trans.oncomplete = () => {
-				resolve()
-			}
+				resolve();
+			};
 
-			let store = trans.objectStore(STORAGE_NAME)
-			let taskCategory = task.id.split('_')
-			taskCategory.shift()
-			taskCategory.pop()
+			let store = trans.objectStore(STORAGE_NAME);
+			let taskCategory = task.id.split("_");
+			taskCategory.shift();
+			taskCategory.pop();
 
-			let getTaskCategory = store.get(taskCategory.join('_'))
+			let getTaskCategory = store.get(taskCategory.join("_"));
 
-			getTaskCategory.onsuccess = (e) => {
-				e.target.result.data.push(task) // обновляем data у значения с ключём category
-				store.put(e.target.result) // обновляем данные в хранилище объектов
-			}
-		})
+			getTaskCategory.onsuccess = e => {
+				e.target.result.data.push(task); // обновляем data у значения с ключём category
+				store.put(e.target.result); // обновляем данные в хранилище объектов
+			};
+		});
 	},
 
-	async updateTask (task) {
-		let db = await this.getDb()
+	async updateTask(task) {
+		let db = await this.getDb();
 		return new Promise(resolve => {
-			let trans = db.transaction([STORAGE_NAME], 'readwrite')
+			let trans = db.transaction([STORAGE_NAME], "readwrite");
 			trans.oncomplete = () => {
-				resolve()
-			}
+				resolve();
+			};
 
-			let store = trans.objectStore(STORAGE_NAME)
-			let taskCategory = task.id.split('_')
-			taskCategory.shift()
-			taskCategory.pop()
+			let store = trans.objectStore(STORAGE_NAME);
+			let taskCategory = task.id.split("_");
+			taskCategory.shift();
+			taskCategory.pop();
 
-			let getTaskCategory = store.get(taskCategory.join('_'))
+			let getTaskCategory = store.get(taskCategory.join("_"));
 
-			getTaskCategory.onsuccess = (e) => {
+			getTaskCategory.onsuccess = e => {
 				for (let i = 0; i < e.target.result.data.length; i++) {
 					if (task.id === e.target.result.data[i].id) {
-						e.target.result.data[i] = task
+						e.target.result.data[i] = task;
 					}
 				}
-				store.put(e.target.result)
-			}
-		})
+				store.put(e.target.result);
+			};
+		});
 	},
 
-	async deleteTask (task) {
-		const db = await this.getDb()
+	async deleteTask(task) {
+		const db = await this.getDb();
 		return new Promise(resolve => {
-			const trans = db.transaction([STORAGE_NAME], 'readwrite')
+			const trans = db.transaction([STORAGE_NAME], "readwrite");
 			trans.oncomplete = () => {
-				resolve()
-			}
+				resolve();
+			};
 
-			const store = trans.objectStore(STORAGE_NAME)
-			let taskCategory = task.id.split('_')
-			taskCategory.shift()
-			taskCategory.pop()
+			const store = trans.objectStore(STORAGE_NAME);
+			let taskCategory = task.id.split("_");
+			taskCategory.shift();
+			taskCategory.pop();
 
-			let getTaskCategory = store.get(taskCategory.join('_'))
+			let getTaskCategory = store.get(taskCategory.join("_"));
 
-			getTaskCategory.onsuccess = (e) => { //определяем index элемента
+			getTaskCategory.onsuccess = e => {
+				//определяем index элемента
 				let indexOf = () => {
-					for(let i = 0; i < e.target.result.data.length; i ++) {
-						if(e.target.result.data[i].id === task.id) {
-							return i
+					for (let i = 0; i < e.target.result.data.length; i++) {
+						if (e.target.result.data[i].id === task.id) {
+							return i;
 						}
 					}
-				}
-				let index = indexOf()
-				e.target.result.data.splice(index, 1) //удаляем элемент по его index
+				};
+				let index = indexOf();
+				e.target.result.data.splice(index, 1); //удаляем элемент по его index
 
-				store.put(e.target.result) // обновляем данные в хранилище объектов
-			}
-		})
+				store.put(e.target.result); // обновляем данные в хранилище объектов
+			};
+		});
 	},
 
-	async addCategory (category) {
-		let db = await this.getDb()
+	async addCategory(category) {
+		let db = await this.getDb();
 		return new Promise(resolve => {
-			let trans = db.transaction([STORAGE_NAME], 'readwrite')
+			let trans = db.transaction([STORAGE_NAME], "readwrite");
 
-			let store = trans.objectStore(STORAGE_NAME)
-			store.add(category)
+			let store = trans.objectStore(STORAGE_NAME);
+			store.add(category);
 
 			trans.oncomplete = () => {
-				console.log('Category added!')
-				resolve()
-			}
-		})
+				console.log("Category added!");
+				resolve();
+			};
+		});
 	},
 
-	async deleteCategory (category) {
-		let db = await this.getDb()
+	async deleteCategory(category) {
+		let db = await this.getDb();
 		return new Promise(resolve => {
-			let trans = db.transaction([STORAGE_NAME], 'readwrite')
+			let trans = db.transaction([STORAGE_NAME], "readwrite");
 
-			let store = trans.objectStore(STORAGE_NAME)
-			
-			store.delete(category.category)
+			let store = trans.objectStore(STORAGE_NAME);
+
+			store.delete(category.category);
 
 			trans.oncomplete = () => {
-				console.log('Category deleted!')
-				resolve()
-			}
-		})
+				console.log("Category deleted!");
+				resolve();
+			};
+		});
 	},
 
-	async updateCategory (allTasks, category) {
-		let db = await this.getDb()
+	async updateCategory(allTasks, category) {
+		let db = await this.getDb();
 		return new Promise(resolve => {
-			let trans = db.transaction([STORAGE_NAME], 'readwrite')
+			let trans = db.transaction([STORAGE_NAME], "readwrite");
 			trans.oncomplete = () => {
-				resolve(resultCategory)
-			}
+				resolve(resultCategory);
+			};
 
-			let store = trans.objectStore(STORAGE_NAME)
-			let taskCategory = store.get(category.category)
-			let resultCategory
-			
-			taskCategory.onsuccess = (e) => {
+			let store = trans.objectStore(STORAGE_NAME);
+			let taskCategory = store.get(category.category);
+			let resultCategory;
 
-				let result = e.target.result
+			taskCategory.onsuccess = e => {
+				let result = e.target.result;
 
-				store.delete(result.category)
+				store.delete(result.category);
 
 				if (result.pagename != category.pagename) {
-					result.category = GetTasksCategory(allTasks, RusToLatin(category.pagename))
+					result.category = GetTasksCategory(
+						allTasks,
+						RusToLatin(category.pagename)
+					);
 				}
-				
-				result.pagename = category.pagename
-				resultCategory = result.category
-				result.color = category.color
+
+				result.pagename = category.pagename;
+				resultCategory = result.category;
+				result.color = category.color;
 
 				for (let i = 0; i < category.data.length; i++) {
-					category.data[i].id = category.data[i].id.split('_')
-					let FirstPartOfCategory = category.data[i].id.shift()
-					let LastPartOfCategory = category.data[i].id.pop()
-					category.data[i].id = FirstPartOfCategory + '_' + resultCategory + '_' + LastPartOfCategory
+					category.data[i].id = category.data[i].id.split("_");
+					let FirstPartOfCategory = category.data[i].id.shift();
+					let LastPartOfCategory = category.data[i].id.pop();
+					category.data[i].id =
+						FirstPartOfCategory +
+						"_" +
+						resultCategory +
+						"_" +
+						LastPartOfCategory;
 				}
 
-				result.data = category.data
+				result.data = category.data;
 
-				store.add(result)
-			}
-		})
+				store.add(result);
+			};
+		});
 	}
-}
+};

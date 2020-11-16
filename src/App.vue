@@ -1,156 +1,160 @@
 <template>
 	<div id="app">
-		<AsideList @navigationAction="navigationAction" :navigationShow="this.navigationShow" :key="'aside-' + $route.fullPath.slice(1)"/>
-		<router-view @navigationAction="navigationAction" :key="$route.fullPath.slice(1)"/>
+		<AsideList
+			@navigationAction="navigationAction"
+			:navigationShow="this.navigationShow"
+			:key="'aside-' + $route.fullPath.slice(1)"
+		/>
+		<router-view
+			@navigationAction="navigationAction"
+			:key="$route.fullPath.slice(1)"
+		/>
 	</div>
 </template>
 
 <script>
-	import AsideList from '@/components/aside-list'
-	import Tasks from '@/components/tasks'
-	import GetItemId from '@/functions/getting_item_id'
+import AsideList from "@/components/aside-list";
 
-	export default {
-		name: 'app',
-		components: {
-			Tasks,
-			AsideList
-		},
+export default {
+	name: "app",
+	components: {
+		AsideList
+	},
 
-		data() {
-			return {
-				navigationShow: false
-			}
-		},
+	data() {
+		return {
+			navigationShow: false
+		};
+	},
 
-		methods: {
-			navigationAction() {
-				this.navigationShow = !this.navigationShow
-			}
+	methods: {
+		navigationAction() {
+			this.navigationShow = !this.navigationShow;
 		}
 	}
+};
 </script>
 
 <style lang="scss">
-	@import '@/assets/style/color.scss';
-	@import '@/assets/style/fonts.scss';
+@import "@/assets/style/color.scss";
+@import "@/assets/style/fonts.scss";
 
-	*,
-	*::before,
-	*::after {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
+*,
+*::before,
+*::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 
-		font-family: Raleway;
-		font-style: normal;
-		font-weight: 500;
-		font-size: 18px;
-		line-height: 23px;
+	font-family: Raleway;
+	font-style: normal;
+	font-weight: 500;
+	font-size: 18px;
+	line-height: 23px;
 
-		overflow: hidden;
-		outline: none;
+	overflow: hidden;
+	outline: none;
 
-		color: var(--black);
+	color: var(--black);
+}
+
+body {
+	width: 100vw;
+	height: 100vh;
+}
+
+a {
+	text-decoration: none;
+}
+
+li {
+	list-style-type: none;
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	border: 0;
+	padding: 0;
+	clip: rect(0 0 0 0);
+	overflow: hidden;
+}
+
+#app {
+	display: flex;
+	width: 100%;
+	height: 100%;
+}
+
+.plus {
+	width: 20px;
+	height: 20px;
+	margin: 13px 0 13px 13px;
+	fill: none;
+
+	& rect {
+		fill: var(--deep-orange);
+		transition: fill 0.2s;
+	}
+}
+
+.btn {
+	cursor: pointer;
+
+	&--hide {
+		cursor: default;
 	}
 
-	body {
-		width: 100vw;
-		height: 100vh;
-	}
-
-	a {
-		text-decoration: none;
-	}
-
-	li {
-		list-style-type: none;
-	}
-
-	.visually-hidden {
+	&-add {
 		position: absolute;
-		width: 1px;
-		height: 1px;
-		margin: -1px;
-		border: 0;
-		padding: 0;
-		clip: rect(0 0 0 0);
-		overflow: hidden;
-	}
+		left: 30px;
+		bottom: 10px;
 
-	#app {
 		display: flex;
-		width: 100%;
-		height: 100%;
-	}
+		align-items: center;
 
-	.plus {
-		width: 20px;
-		height: 20px;
-		margin: 13px 0 13px 13px;
-		fill: none;
+		width: auto;
+		height: auto;
 
-		& rect {
-			fill: var(--deep-orange);
-			transition: fill .2s;
-		}
-	}
+		background-color: transparent;
 
-	.btn {
-		cursor: pointer;
+		border: none;
+		border-radius: 16px;
 
-		&--hide {
-			cursor: default;
+		transition: 0.2s;
+
+		&--special {
+			display: none;
 		}
 
-		&-add {
-			position: absolute;
-			left: 30px;
-			bottom: 10px;
+		&__text {
+			padding: 13px 20px 14px;
+			color: var(--deep-orange);
+			transition: color 0.2s;
+		}
 
-			display: flex;
-			align-items: center;
+		&--category {
+			width: calc(100% - 30px * 2);
+		}
 
-			width: auto;
-			height: auto;
+		&:hover,
+		&:focus-within {
+			background-color: var(--deep-orange);
 
-			background-color: transparent;
-
-			border: none;
-			border-radius: 16px;
-
-			transition: .2s;
-
-			&--special {
-				display: none;
+			& .btn-add__text {
+				color: var(--white);
 			}
 
-			&__text {
-				padding: 13px 20px 14px;
-				color: var(--deep-orange);
-				transition: color .2s;
-			}
-
-			&--category {
-				width: calc(100% - 30px *2 );
-			}
-
-			&:hover,
-			&:focus-within {
-				background-color: var(--deep-orange);
-
-				& .btn-add__text {
-					color: var(--white);
-				}
-
-				& .plus rect {
-					fill: var(--white);
-				}
-			}
-
-			&:active {
-				opacity: .5;
+			& .plus rect {
+				fill: var(--white);
 			}
 		}
+
+		&:active {
+			opacity: 0.5;
+		}
 	}
+}
 </style>

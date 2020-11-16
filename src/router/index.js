@@ -1,51 +1,51 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import SectionList from '@/components/section-list'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import SectionList from "@/components/section-list";
 // import SectionCalendar from '@/components/section-calendar'
-import SectionEmpty from '@/components/section-empty'
+import SectionEmpty from "@/components/section-empty";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
-let Component = SectionList
+let Component = SectionList;
 
 let routes = [
 	{
-		path: '/',
-		redirect: '/today',
+		path: "/",
+		redirect: "/today"
 	},
 	{
-		path: '/today',
+		path: "/today",
 		component: SectionEmpty,
-		props: { category: 'today' }
+		props: { category: "today" }
 	},
 	{
-		path: '/calendar',
+		path: "/calendar",
 		component: SectionEmpty,
-		props: { category: 'date' }
+		props: { category: "date" }
 	},
 	{
-		path: '/selected',
+		path: "/selected",
 		component: SectionEmpty,
-		props: { category: 'selected' }
+		props: { category: "selected" }
 	},
 	{
-		path: '/complete',
+		path: "/complete",
 		component: SectionEmpty,
-		props: { category: 'complete' }
+		props: { category: "complete" }
 	},
 	{
-		path: '/:pagenameCategory',
-		name: 'pagenameCategory',
+		path: "/:pagenameCategory",
+		name: "pagenameCategory",
 		component: Component,
 		props: true
 	}
-]
+];
 
 const router = new VueRouter({
-	mode: 'history',
+	mode: "history",
 	base: process.env.BASE_URL,
-	props: ['category'],
+	props: ["category"],
 	routes
-})
+});
 
-export default router
+export default router;
