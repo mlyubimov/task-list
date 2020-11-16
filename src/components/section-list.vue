@@ -1,6 +1,12 @@
 <template>
 	<section class="content">
 		<div class="content__header">
+			<button :class="['navigation__icon-container navigation__icon-container--button', classIconNavigationButton]" v-show="this.showBack" @click="$emit('navigationAction')">
+				<svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<rect :class="[`icon--${tasks.color}`]" x="14.1421" width="4" height="20" rx="2" transform="rotate(45 14.1421 0)" fill="black"/>
+					<rect :class="[`icon--${tasks.color}`]" x="16.9705" y="25.4558" width="4" height="20" rx="2" transform="rotate(135 16.9705 25.4558)" fill="black"/>
+				</svg>	
+			</button>
 			<div class="pagename">
 				<input :class="[`pagename__title pagename__title--${tasks.color}`, classPage]" type="text" placeholder="Введите здесь название категории" required v-model="tasks.pagename" @blur="updateCategory(tasks)">
 				<div class="pagename__color-container">
@@ -61,7 +67,8 @@
 		data() {
 			return {
 				taskShow: false,
-				taskTitle: ''
+				taskTitle: '',
+				showBack: false
 			}
 		},
 		
@@ -134,7 +141,22 @@
 					this.$router.currentRoute.path.slice(1) === 'complete') {
 						return ['btn-add--special']
 				}
+			},
+
+			classIconNavigationButton() {
+				if (window.matchMedia("(max-width: 992px)").matches) {
+					this.showBack = true
+					return ['navigation__icon-container--button']
+				} else {
+					this.showBack = false
+				}
 			}
+		},
+
+		mounted() {
+			window.addEventListener("orientationchange", () => {
+				this.handleOrientationChange()
+			});
 		},
 
 		created() {
@@ -209,6 +231,14 @@
 				this.taskTitle = ''
 
 				this.taskShow = false
+			},
+
+			handleOrientationChange() {
+				if (window.matchMedia("(max-height: 992px)").matches) {
+					this.showBack = true
+				} else {
+					this.showBack = false
+				}
 			}
 		}
 	}
@@ -222,10 +252,10 @@
 
 		&__warning {
 			position: absolute;
-			top: calc(50% - 41px - 30px);
-			left: calc(50% - 360px);
+			top: 50%;
+			left: 50%;
 
-			transform: translate(0, -50%);
+			transform: translate(-50%, -50%);
 		}
 
 		&__header {
@@ -247,6 +277,10 @@
 			margin-bottom: 20px;
 
 			overflow-y: auto;
+
+			& * {
+				overflow: visible;
+			}
 		}
 
 		&__item {
@@ -349,6 +383,10 @@
 			border: none;
 
 			pointer-events: none;
+
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 
 			&--pink {
 				color: var(--pink);
@@ -462,5 +500,79 @@
 
 	.buttonRemoveContent {
 		display: flex;
+	}
+
+	@media (max-width: 500px) {
+		.content {
+			&__item {
+				position: relative;
+				height: 100px;
+
+				align-items: flex-end;
+
+				& .content__btn,
+				& span {
+					flex: 1;
+					height: 50%;
+				}
+
+				& span .content__btn {
+					flex: auto;
+					width: 100%;
+					height: 100%;
+				}
+			}
+
+			&__title {
+				position: absolute;
+				top: 0;
+				width: 100%;
+				height: 50%;
+
+				padding: 15px 9.5% 10px;
+			}
+		}
+	}
+
+	@media (max-width: 992px) {
+		.content {
+			width: 100%;
+		}
+
+		.pagename {
+			&__title {
+				font-size: 28px;
+			}
+		}
+
+		.icon {
+			&--pink {
+				fill: var(--pink);
+			}
+
+			&--red {
+				fill: var(--red);
+			}
+
+			&--green {
+				fill: var(--green);
+			}
+
+			&--purple {
+				fill: var(--purple);
+			}
+
+			&--blue {
+				fill: var(--blue);
+			}
+
+			&--cyan {
+				fill: var(--cyan);
+			}
+		}
+	}
+
+	@media (max-width: 1400px) {
+		
 	}
 </style>

@@ -1,12 +1,11 @@
 <template>
 	<div id="app">
-		<AsideList :key="'aside-' + $route.fullPath.slice(1)"/>
-		<router-view :key="$route.fullPath.slice(1)"/>
+		<AsideList @navigationAction="navigationAction" :navigationShow="this.navigationShow" :key="'aside-' + $route.fullPath.slice(1)"/>
+		<router-view @navigationAction="navigationAction" :key="$route.fullPath.slice(1)"/>
 	</div>
 </template>
 
 <script>
-
 	import AsideList from '@/components/aside-list'
 	import Tasks from '@/components/tasks'
 	import GetItemId from '@/functions/getting_item_id'
@@ -16,6 +15,18 @@
 		components: {
 			Tasks,
 			AsideList
+		},
+
+		data() {
+			return {
+				navigationShow: false
+			}
+		},
+
+		methods: {
+			navigationAction() {
+				this.navigationShow = !this.navigationShow
+			}
 		}
 	}
 </script>

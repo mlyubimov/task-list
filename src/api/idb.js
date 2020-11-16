@@ -6,13 +6,25 @@ const STORAGE_NAME = 'tasks'
 const DB_VERSION = 1
 let DB
 
+// In the following line, you should include the prefixes of implementations you want to test.
+// window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+// DON'T use "var indexedDB = ..." if you're not in a function.
+// Moreover, you may need references to some window.IDB* objects:
+window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"}; // This line should only be needed if it is needed to support the object's constants for older browsers
+window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+// (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
+
 export default {
 	async getDb () {
 		return new Promise((resolve, reject) => {
 			if (DB) {
 				return resolve(DB)
 			}
-			const request = window.indexedDB.open(DB_NAME, DB_VERSION)
+			const request = window.indexedDB.open(DB_NAME, DB_VERSION) || window.mozIndexedDB.open(DB_NAME, DB_VERSION) || window.webkitIndexedDB || window.msIndexedDB.open(DB_NAME, DB_VERSION);
+
+			if (!window.indexedDB) {
+				window.alert("Your browser doesn't support a stable version of IndexedDB.")
+			}
 
 			request.onerror = e => {
 				console.log('Error opening db', e)

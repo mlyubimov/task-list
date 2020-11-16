@@ -11,5 +11,7 @@ module.exports = {
 			entry: 'src/main.js',
 			title: 'Task manager'
 		},
-	}
+	},
+
+	transpileDependencies: ['v-calendar']
 }

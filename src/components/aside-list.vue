@@ -1,10 +1,9 @@
 <template>
-	<nav class="navigation">
-		
+	<nav :class="['navigation', classNavigationShow]">
 			<div class="navigation__filter">
 				<ul>
 					<router-link tag="li" to="/today">
-						<a class="navigation__link">
+						<a class="navigation__link" @click="$emit('navigationAction')">
 							<span class="navigation__icon-container">
 								<svg :class="['navigation__icon navigation__icon--sun', classTodayIcon]" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<circle cx="13" cy="13" r="4" stroke="black" stroke-width="2"/>
@@ -22,7 +21,7 @@
 						</a>
 					</router-link>
 					<router-link tag="li" to="/calendar">
-						<a class="navigation__link">
+						<a class="navigation__link" @click="$emit('navigationAction')">
 							<span class="navigation__icon-container">
 								<svg :class="['navigation__icon', classCalendarIcon]" width="21" height="21" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<rect x="1" y="1" width="23" height="23" rx="5" stroke="black" stroke-width="2"/>
@@ -34,7 +33,7 @@
 						</a>
 					</router-link>
 					<router-link tag="li" to="/selected">
-						<a class="navigation__link">
+						<a class="navigation__link" @click="$emit('navigationAction')">
 							<span class="navigation__icon-container">
 								<svg :class="['navigation__icon navigation__icon--star', classSelectedIcon]" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path d="M11.9511 1.69098C11.8172 1.27896 11.4332 1 11 1C10.5668 1 10.1828 1.27896 10.0489 1.69098L8.25283 7.21885H2.44049C2.00727 7.21885 1.62331 7.49781 1.48944 7.90983C1.35556 8.32185 1.50222 8.77322 1.85271 9.02786L6.55499 12.4443L4.75888 17.9721C4.625 18.3842 4.77166 18.8355 5.12215 19.0902C5.47264 19.3448 5.94723 19.3448 6.29772 19.0902L11 15.6738L15.7023 19.0902C16.0528 19.3448 16.5274 19.3448 16.8779 19.0902C17.2283 18.8355 17.375 18.3842 17.2411 17.9721L15.445 12.4443L20.1473 9.02786C20.4978 8.77322 20.6444 8.32185 20.5106 7.90983C20.3767 7.49781 19.9927 7.21885 19.5595 7.21885H13.7472L11.9511 1.69098Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -44,7 +43,7 @@
 						</a>
 					</router-link>
 					<router-link tag="li" to="/complete">
-						<a class="navigation__link">
+						<a class="navigation__link"  @click="$emit('navigationAction')">
 							<span class="navigation__icon-container">
 								<svg :class="['navigation__icon navigation__icon--complete', classCompleteIcon]" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<rect x="1" y="1" width="18" height="18" rx="9" stroke="black" stroke-width="2"/>
@@ -70,13 +69,13 @@
 				</div>
 				<ul class="navigation__list">
 					<router-link class="navigation__item" tag="li" :to="{ name: 'pagenameCategory', params: { pagenameCategory: `${tasks.category}`, category: `${tasks.category}` } }" v-for="(tasks, index) in allTasks" :key="tasks.category">
-						<a :class="`navigation__text navigation__link navigation__link-page navigation__link-page--${tasks.color}`">{{ tasks.pagename }}</a>
+						<a :class="`navigation__text navigation__link navigation__link-page navigation__link-page--${tasks.color}`" @click="$emit('navigationAction')">{{ tasks.pagename }}</a>
 					</router-link>
 				</ul>
 			</div>
 			
 		</ul>
-		<button class="btn btn-add btn-add--category" type="button" @click="addCategory(pagename)">
+		<button class="btn btn-add btn-add--category" type="button" @click="addCategory(pagename); $emit('navigationAction')">
 			<svg class="plus" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
 				<rect x="8" width="4" height="20" rx="2"/>
 				<rect x="20" y="8" width="4" height="20" rx="2" transform="rotate(90 20 8)"/>
@@ -98,7 +97,8 @@
 
 		data() {
 			return {
-				pagename: 'Новая категория'
+				pagename: 'Новая категория',
+				// navigationShow: false,
 			}
 		},
 
@@ -128,6 +128,12 @@
 			classCompleteIcon() {
 				if (this.$router.currentRoute.path.slice(1) === 'complete') {
 					return ['navigation__icon--complete-page']
+				}
+			},
+
+			classNavigationShow() {
+				if (this.$attrs.navigationShow === true) {
+					return ['navigation--show']
 				}
 			}
 		},
@@ -179,7 +185,10 @@
 		border-right: 2px solid var(--gallery);
 		background-color: var(--white);
 
-		
+		&__close {
+			display: none;
+		}
+
 		&__filter {
 			// height: 300px;
 			margin-bottom: 100px;
@@ -335,5 +344,80 @@
 		&__text {
 			font-weight: 600;
 		}
+	}
+
+	@media (max-width: 992px) {
+		.navigation {
+			position: absolute;
+			right: 100%;
+			width: 100%;
+
+			margin: 0;
+			border: none;
+
+			z-index: 9999;
+
+			transition: 0.3s ease-in-out;
+
+			&__filter {
+				margin-bottom: 30px;
+			}
+
+			&__link {
+				width: 85%;
+
+				&-page {
+					width: 100%;
+				}
+			}
+
+			&__icon-container {
+				&--button {
+					// display: none;
+					width: 20px;
+					height: 20px;
+					background-color: transparent;
+					border: none;
+
+					margin-right: 0px;
+
+					&-show {
+						display: flex;
+					}
+				}
+			}
+
+			&__close {
+				display: block;
+				position: absolute;
+				top: 40px;
+				right: 30px;
+
+				width: 35px;
+				height: 35px;
+
+				background-color: var(--gallery);
+				border: none;
+				border-radius: 12px;
+
+				transition: opacity 0.3s;
+
+				&:active {
+					opacity: .5;
+				}
+			}
+
+			&__categories {
+				height: calc(100% - 216px - 50px - 26px);
+			}
+
+			&--show {
+				right: 0%;
+			}
+		}
+	}
+
+	@media (max-width: 1400px) {
+		
 	}
 </style>

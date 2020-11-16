@@ -10,7 +10,7 @@
 			</svg>
 		</button>
 		<input :class="['content__title', classText]" type="text" v-model="task.title" v-focus @focus="task.focused = true" @blur="task.focused = false; deleteTask(task, 'input'); taskId(task)">
-		<v-date-picker v-model="task.date">
+		<v-date-picker v-model="task.date" class="abc">
 			<template v-slot="{ togglePopover }">
 				<button class="btn content__btn" type="button" @click="togglePopover({ placement: 'auto' })">
 					<svg width="21" height="21" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">

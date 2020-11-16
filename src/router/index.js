@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import SectionList from '@/components/section-list'
-import SectionCalendar from '@/components/section-calendar'
+// import SectionCalendar from '@/components/section-calendar'
 import SectionEmpty from '@/components/section-empty'
 
 Vue.use(VueRouter)

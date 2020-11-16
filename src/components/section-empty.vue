@@ -1,6 +1,12 @@
 <template>
 	<section class="content">
 		<div class="content__header">
+			<button :class="['navigation__icon-container navigation__icon-container--button', classIconNavigationButton]" v-show="this.showBack" @click="$emit('navigationAction')">
+				<svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<rect :class="[`icon--${tasks.color}`]" x="14.1421" width="4" height="20" rx="2" transform="rotate(45 14.1421 0)" fill="black"/>
+					<rect :class="[`icon--${tasks.color}`]" x="16.9705" y="25.4558" width="4" height="20" rx="2" transform="rotate(135 16.9705 25.4558)" fill="black"/>
+				</svg>								
+			</button>
 			<div class="pagename">
 				<input :class="[`pagename__title pagename__title--${tasks.color}`, classPage]" type="text" v-model="tasks.pagename">
 			</div>
@@ -56,6 +62,13 @@
 		
     	beforeUpdate() { 
 			document.title = `${this.$store.state.pageTasks.pagename} | Task manager` 
+		},
+
+		data () {
+			return {
+				showBack: false,
+				button: false
+			}
 		},
 
 		computed: {
@@ -119,7 +132,22 @@
 				if (this.$router.currentRoute.path.slice(1) === 'complete') {
 					return ['navigation__icon--complete-page']
 				}
+			},
+
+			classIconNavigationButton() {
+				if (window.matchMedia("(max-width: 992px)").matches) {
+					this.showBack = true
+					return ['navigation__icon-container--button']
+				} else {
+					this.showBack = false
+				}
 			}
+		},
+
+		mounted() {
+			window.addEventListener("orientationchange", () => {
+				this.handleOrientationChange()
+			});
 		},
 
 		created() {
@@ -131,6 +159,18 @@
 
 		methods: {
 			...mapActions(['getTasks', 'getPageTasks']),
+
+			navigationOpen() {
+				this.$attrs.navigationShow = !this.$attrs.navigationShow
+			},
+
+			handleOrientationChange() {
+				if (window.matchMedia("(max-height: 992px)").matches) {
+					this.showBack = true
+				} else {
+					this.showBack = false
+				}
+			}
 		}
 	}
 </script>
@@ -172,6 +212,18 @@
 			font-size: 20px;
 			font-weight: bold;
 			text-align: center;
+		}
+	}
+
+	@media (max-heigth: 500px) {
+		.content {
+			&__header {
+				margin-bottom: 20px;
+			}
+
+			&__list {
+				height: calc(100% - 41px - 20px);
+			}
 		}
 	}
 </style>

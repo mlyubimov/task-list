@@ -17,11 +17,10 @@
 ## Что в планах?
 
 ![IndexedDB](https://flat.badgen.net/badge/STATUS/SUCCESS/4cc61e)&emsp;Хранилище данных  
-![Responsive design](https://flat.badgen.net/badge/STATUS/IN%20WORKING/8b35da)&emsp;Адаптивный дизайн  
+![Responsive design](https://flat.badgen.net/badge/STATUS/SUCCESS/4cc61e)&emsp;Адаптивный дизайн  
 ![Functionality of Tabs](https://flat.badgen.net/badge/STATUS/IN%20WORKING/8b35da)&emsp;Функциональность особым вкладкам  
 ![Dark Theme](https://flat.badgen.net/badge/STATUS/IN%20QUEUE/d9634c)&emsp;Тёмная тема  
 ![Multilanguage](https://flat.badgen.net/badge/STATUS/IN%20QUEUE/d9634c)&emsp;Мультиязычность  
-![Page 404](https://flat.badgen.net/badge/STATUS/IN%20QUEUE/d9634c)&emsp;Страница 404  
 ![Diversity of List](https://flat.badgen.net/badge/STATUS/IN%20QUEUE/d9634c)&emsp;Больше разнообразия и функциональности спискам 
 
 ## Какие технологии использовались при создании?
